@@ -1,16 +1,21 @@
 package com.meritamerica.week11.models;
 
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.DecimalMax;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.meritamerica.week11.exceptions.*;
 
+@MappedSuperclass
 public abstract class BankAccount  {
 	
 	

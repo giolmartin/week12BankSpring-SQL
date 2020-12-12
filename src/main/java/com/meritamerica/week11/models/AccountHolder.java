@@ -3,9 +3,16 @@ package com.meritamerica.week11.models;
 
 
 import java.util.ArrayList;
+
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
+
+@Entity
+@Table
+
 
 public class AccountHolder {
 

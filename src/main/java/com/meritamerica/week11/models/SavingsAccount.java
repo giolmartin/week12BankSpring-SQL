@@ -1,12 +1,18 @@
 package com.meritamerica.week11.models;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+
+@Entity
+@Table
 public class SavingsAccount extends BankAccount {
 
-	
+	@Id
+	@GeneratedValue
+	private static  int id;
 	private static final double INTEREST_RATE = 0.001 ;
 	
 	public SavingsAccount() {

@@ -1,3 +1,4 @@
+
 package com.meritamerica.week11.controller;
 
 import java.util.*;
@@ -8,6 +9,8 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +19,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.meritamerica.week11.exceptions.*;
 
 
-
+@Repository
+@Transactional
 @RestController
 @Validated
 public class MeritBankController {

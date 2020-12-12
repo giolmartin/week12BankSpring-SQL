@@ -2,8 +2,11 @@ package com.meritamerica.week11.models;
 
 
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
-
+@Entity
+@Table
 public class CDOffering {
 
 	@Min(value = 1)
