@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.meritamerica.week11.models.*;
+import com.meritamerica.week11.services.AccountHolderService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.meritamerica.week11.exceptions.*;
 
@@ -28,6 +30,9 @@ public class MeritBankController {
 
 	Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	@Autowired
+	private AccountHolderService ahService;
+	
 	@GetMapping(value = "/AccountHolder")
 	public List<AccountHolder> getAccountHolder() {
 		log.info("Returned account holders");
@@ -39,9 +44,11 @@ public class MeritBankController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public  AccountHolder addAccountHolder(@RequestBody @Valid AccountHolder accountHolder) {
 		//try catch here i think
-		MeritBank.addAccountHolder(accountHolder);
 		log.info("User has added account");
-		return accountHolder;
+		return ahService.addAccountHolder(accountHolder);
+		//	MeritBank.addAccountHolder(accountHolder);
+	
+	
 	}
 	@GetMapping(value = "/AccountHolder/{id}")
 	public AccountHolder getAccountByID(@PathVariable int id) throws NoSuchResourceFoundException {

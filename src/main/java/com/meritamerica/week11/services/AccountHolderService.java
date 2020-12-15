@@ -11,7 +11,7 @@ public class AccountHolderService {
 	AccountHolderRepo repo;
 	
 	public AccountHolder addAccountHolder(AccountHolder acc) {
-		repo.save(acc);
-		return acc;
+		return repo.save(acc);
+		//return acc;
 	}
 }

@@ -12,8 +12,6 @@ import javax.validation.constraints.*;
 
 @Entity
 @Table
-
-
 public class AccountHolder {
 
 	private static final long  MAX_COMBINED_AMOUNT= 250000;
