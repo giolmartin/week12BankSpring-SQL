@@ -68,7 +68,7 @@ public class MeritBankController {
 	@PostMapping(value = "/account-holders/{accountID}/savings-account")
 	@ResponseStatus(HttpStatus.CREATED)
 	public SavingsAccount postSavingsAccount(@PathVariable("accountID") int id, @RequestBody @Valid SavingsAccount savingsAccount) 
-											throws NoSuchResourceFoundException{
+											throws NoSuchResourceFoundException, ExceedsCombinedLimitException{
 		log.info("Savings Account created and Added");
 		return service.postSavingsAccount(id, savingsAccount);
 	}
@@ -83,7 +83,8 @@ public class MeritBankController {
 	
 	@PostMapping(value = "/account-holders/{accountID}/cd-account")
 	@ResponseStatus(HttpStatus.CREATED)
-	public CDAccount postCDAccount(@PathVariable("accountID") int id, @RequestBody @Valid CDAccount cdAccount) throws NoSuchResourceFoundException {
+	public CDAccount postCDAccount(@PathVariable("accountID") int id, @RequestBody @Valid CDAccount cdAccount) 
+									throws NoSuchResourceFoundException, ExceedsCombinedLimitException {
 		cdAccount.getCdOffering().getId();
 		return service.postCDAccount(id, cdAccount);
 	}

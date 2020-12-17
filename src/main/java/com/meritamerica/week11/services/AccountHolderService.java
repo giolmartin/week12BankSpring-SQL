@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.meritamerica.week11.exceptions.ExceedsCombinedLimitException;
 import com.meritamerica.week11.exceptions.NoSuchResourceFoundException;
 import com.meritamerica.week11.models.AccountHolder;
 import com.meritamerica.week11.models.AccountHoldersContactDetails;
@@ -21,6 +22,9 @@ import com.meritamerica.week11.repos.CheckingAccountRepository;
 import com.meritamerica.week11.repos.SavingsAccountRepository;
 @Service
 public class AccountHolderService {
+	
+	protected static final double MAX_DEPOSIT_AMOUNT = 250000;
+	
 	@Autowired
 	AccountHolderRepository repository;
 	
@@ -54,26 +58,45 @@ public class AccountHolderService {
 		return cdOfferingRepository.findById(id).orElseThrow(() -> new NoSuchResourceFoundException("Invalid CDOffering Id"));
 	}
 	
-	public CheckingAccount postCheckingAccount(int id, CheckingAccount checkingAccount) throws NoSuchResourceFoundException {
+	public CheckingAccount postCheckingAccount(int id, CheckingAccount checkingAccount) throws NoSuchResourceFoundException, ExceedsCombinedLimitException {
 		AccountHolder ah = findById(id);
 		checkingAccount.setAccountHolder(ah);
+		Double balance = checkingAccount.getBalance();
+		if (ah.combinedBalance() + balance > MAX_DEPOSIT_AMOUNT) {
+			throw new ExceedsCombinedLimitException("Deposit exceeds the " + MAX_DEPOSIT_AMOUNT + " total.");
+		}
+		else {	
+			checkingAccount.setAccountHolder(ah);
 		return checkingRepository.save(checkingAccount);
+		}
 	}
 	
-	public SavingsAccount postSavingsAccount(int id, SavingsAccount savingsAccount) throws NoSuchResourceFoundException {
+	public SavingsAccount postSavingsAccount(int id, SavingsAccount savingsAccount) throws NoSuchResourceFoundException, ExceedsCombinedLimitException {
 		AccountHolder ah = findById(id);
-		savingsAccount.setAccountHolder(ah);
-		return savingsRepository.save(savingsAccount);
+		Double balance = savingsAccount.getBalance();	
+		if (ah.combinedBalance() + balance > MAX_DEPOSIT_AMOUNT) {
+			throw new ExceedsCombinedLimitException("Deposit exceeds the " + MAX_DEPOSIT_AMOUNT + " total.");
+		}
+		else {
+			savingsAccount.setAccountHolder(ah);
+			return savingsRepository.save(savingsAccount);
+		}
 	}
 
-	public CDAccount postCDAccount(int id, @Valid CDAccount cdAccount) throws NoSuchResourceFoundException {
+	public CDAccount postCDAccount(int id, @Valid CDAccount cdAccount) throws NoSuchResourceFoundException, ExceedsCombinedLimitException {
 		AccountHolder ah = findById(id);
 		CDOffering cdO = findCDOfferingById(cdAccount.getCdOffering().getId());
-		cdAccount.setAccountHolder(ah);
-		cdAccount.setCdOffering(cdO);
-		cdAccount.setTerm(cdO.getTerm());
-		cdAccount.setInterestRate(cdO.getInterestRate());
-		return cdAccountRepository.save(cdAccount);
+		Double balance = cdAccount.getBalance();
+		if (ah.combinedBalance() + balance > MAX_DEPOSIT_AMOUNT) {
+			throw new ExceedsCombinedLimitException("Deposit exceeds the " + MAX_DEPOSIT_AMOUNT + " total.");
+		}else {
+			cdAccount.setAccountHolder(ah);
+			cdAccount.setCdOffering(cdO);
+			cdAccount.setTerm(cdO.getTerm());
+			cdAccount.setInterestRate(cdO.getInterestRate());
+			return cdAccountRepository.save(cdAccount);
+		}
+		
 	}
 	
 	public CDOffering postCDOffering(@Valid CDOffering cdOffering) {
@@ -106,6 +129,15 @@ public class AccountHolderService {
 		return msg;
 	}
 	
-	
+	/*
+	public Boolean exceedsOrNot(double combinedBalance, double balance) throws ExceedsCombinedLimitException {
+		if (combinedBalance + balance > MAX_DEPOSIT_AMOUNT) {
+			throw new ExceedsCombinedLimitException("Deposit exceeds the " + MAX_DEPOSIT_AMOUNT + " total.");
+		}
+		else {
+			return true;
+		}
+	}
+	*/
 	
 }

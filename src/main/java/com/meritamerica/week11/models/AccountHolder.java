@@ -16,6 +16,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name= "ACCOUNT_HOLDERS")
 public class AccountHolder {
@@ -57,8 +59,18 @@ public class AccountHolder {
 	@OneToMany(targetEntity = CDAccount.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "accountHolder")
 	private List<CDAccount> cdAccounts;
 	
+	@JsonIgnore
+	private double totalBalance;
 	
 	
+	public void setTotalBalance(double totalBalance) {
+		this.totalBalance = totalBalance;
+	}
+
+	public double getTotalBalance() {
+		return  combinedBalance();
+	}
+
 	public List<CheckingAccount> getCheckingAccounts() {
 		return checkingAccounts;
 	}
@@ -139,7 +151,23 @@ public class AccountHolder {
 	public void setContact(AccountHoldersContactDetails contact) {
 		this.contact = contact;
 	}
+	
+	
 
+	public double combinedBalance() {
+		
+		for(CheckingAccount i: checkingAccounts) {
+			totalBalance = i.getBalance();
+		}
+		for(SavingsAccount i: savingsAccounts) {
+			totalBalance = i.getBalance();
+		}
+		for(CDAccount i: cdAccounts) {
+			totalBalance = i.getBalance();
+		}
+		
+		return totalBalance;
+	}
 
 	
 	
