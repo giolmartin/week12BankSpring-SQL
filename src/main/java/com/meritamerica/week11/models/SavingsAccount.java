@@ -1,5 +1,6 @@
 package com.meritamerica.week11.models;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -7,14 +8,10 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table
+@DiscriminatorValue("SAVINGS")
 public class SavingsAccount extends BankAccount {
 
-	@Id
-	@GeneratedValue
-	private static  int id;
 	private static final double INTEREST_RATE = 0.001 ;
-	
 	public SavingsAccount() {
 		super(INTEREST_RATE);
 	}

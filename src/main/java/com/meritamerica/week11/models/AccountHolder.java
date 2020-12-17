@@ -2,20 +2,28 @@ package com.meritamerica.week11.models;
 
 
 
-import java.util.ArrayList;
-
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table
+@Table(name= "ACCOUNT_HOLDERS")
 public class AccountHolder {
 
-	private static final long  MAX_COMBINED_AMOUNT= 250000;
-	private static int nextId = 1;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_holder_generator")
+	@Column(name = "account_holder_id")
 	private int id;
 
 
@@ -32,24 +40,52 @@ public class AccountHolder {
 	@NotBlank(message = "Need to specify ssn")
 	//@Size(min = 11, max = 11, message = "Not a valid SSN") 
 	private String ssn;
+	
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="accountHolder")
+	private AccountHoldersContactDetails contact;
+	
+	@OneToMany(targetEntity = CheckingAccount.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "accountHolder")
+	//@JoinColumn(name = "account_holder_id", referencedColumnName = "account_id")
+	private List<CheckingAccount> checkingAccounts;
+	
+	@OneToMany(targetEntity = SavingsAccount.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "accountHolder")
+	//@JoinColumn(name = "account_holder_id", referencedColumnName = "account_id")
+	private List<SavingsAccount> savingsAccounts;
 
-	private List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
-	private List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
-	private List<CDAccount> cdAccounts = new ArrayList<CDAccount>();
 	
-	private  int numberOfCheckingAccounts ;
-	private double checkingBalance;
-	private  int numberOfSavingsAccounts;
-	private double savingsBalance;
-	private  int numberOfCDAccounts ;
-	private double cdBalance;
+	@OneToMany(targetEntity = CDAccount.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "accountHolder")
+	private List<CDAccount> cdAccounts;
 	
-	@Min(value = 0L) 
-	@Max(value = 250000, message = "Over 250k")
-	double combinedBalance;
+	
+	
+	public List<CheckingAccount> getCheckingAccounts() {
+		return checkingAccounts;
+	}
+
+	public void setCheckingAccounts(List<CheckingAccount> checkingAccounts) {
+		this.checkingAccounts = checkingAccounts;
+	}
+	
+	public List<SavingsAccount> getSavingsAccounts() {
+		return savingsAccounts;
+	}
+
+	public void setSavingsAccounts(List<SavingsAccount> savingsAccounts) {
+		this.savingsAccounts = savingsAccounts;
+	}
+	
+	public List<CDAccount> getCdAccounts() {
+		return cdAccounts;
+	}
+
+	public void setCdAccounts(List<CDAccount> cdAccounts) {
+		this.cdAccounts = cdAccounts;
+	}
+
+
 
 	public AccountHolder() {
-		this.id = nextId++;
 		this.firstName = "";
 		this.middleName = "";
 		this.lastName = "";
@@ -96,6 +132,55 @@ public class AccountHolder {
 		this.ssn = ssn;
 	}
 
+	public AccountHoldersContactDetails getContact() {
+		return contact;
+	}
+
+	public void setContact(AccountHoldersContactDetails contact) {
+		this.contact = contact;
+	}
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	private List<CheckingAccount> checkingAccounts = new ArrayList<CheckingAccount>();
+	private List<SavingsAccount> savingsAccounts = new ArrayList<SavingsAccount>();
+	private List<CDAccount> cdAccounts = new ArrayList<CDAccount>();
+	
+	private  int numberOfCheckingAccounts ;
+	private double checkingBalance;
+	private  int numberOfSavingsAccounts;
+	private double savingsBalance;
+	private  int numberOfCDAccounts ;
+	private double cdBalance;
+	
+	@Min(value = 0L) 
+	@Max(value = 250000, message = "Over 250k")
+	double combinedBalance;
+*/
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
 	public CheckingAccount addCheckingAccount(double balance) {
 	
 		CheckingAccount checkingAccount = new CheckingAccount(balance);
@@ -176,6 +261,6 @@ public class AccountHolder {
 		this.combinedBalance	= getCheckingBalance()+ getSavingsBalance() + getCDBalance();
 		return combinedBalance;
 	}
-
+*/
 
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 public class MeritBank {
 
+	/*
 	private static List<AccountHolder> accounts = new ArrayList<AccountHolder>();
 	private static List<CDOffering> cdOfferings = new ArrayList<CDOffering>();
 	private static  long accountNumber = 1;
@@ -41,5 +42,5 @@ public class MeritBank {
 		MeritBank.cdOfferings = cdOfferings;
 	}
 
-	
+	*/
 }

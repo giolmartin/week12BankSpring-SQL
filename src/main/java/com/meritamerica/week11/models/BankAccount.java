@@ -1,55 +1,76 @@
 package com.meritamerica.week11.models;
 
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.DecimalMax;
-
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Max;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.DiscriminatorOptions;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import com.meritamerica.week11.exceptions.*;
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="ACCOUNT_TYPE", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorOptions(force = true)
 
-@MappedSuperclass
+//@MappedSuperclass
 public abstract class BankAccount  {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "bank_account_generator")
+	@Column(name = "account_id")
+	private int accountNumber;
 	
-	private long accountNumber;
-	
+	@ManyToOne
+	@JoinColumn(name="account_holder_id", nullable= false)
+	@JsonIgnore
+	private AccountHolder accountHolder;
+
 	@Min(value = 0L, message = "Balance Lower Than 0 Exception")
 	private double balance;
 	
-	@DecimalMin(value = "0.0", inclusive = false, message = "Interest must be greater than 0")
-	@DecimalMax(value = "1.0", inclusive = false, message = "Interest rate must be lower than 1")
+	//@DecimalMin(value = "0.0", inclusive = false, message = "Interest must be greater than 0")
+	//@DecimalMax(value = "1.0", inclusive = false, message = "Interest rate must be lower than 1")
 	private double interestRate;
 	
 	private String openedOn;
 
 	public  BankAccount() { 
-		this.accountNumber = MeritBank.getNextAccountNumber();
+		
 		openedOn = "1234566";
 		}
 	
 	public BankAccount(double interestRate) {
-		this.accountNumber = MeritBank.getNextAccountNumber();	
+		
 		this.balance = 0 ;
 		this.interestRate=interestRate;
 		openedOn = "123123141423";
 	}
 	
 	BankAccount(double balance, double interestRate){
-		this.accountNumber = MeritBank.getNextAccountNumber();
+		
 		this.balance = balance;
 		this.interestRate = interestRate;
 		openedOn = "123123141423";
 	}
 
+	public AccountHolder getAccountHolder() {
+		return accountHolder;
+	}
 
+	public void setAccountHolder(AccountHolder accountHolder) {
+		this.accountHolder = accountHolder;
+	}
 	
 	public double getBalance() {
 		return balance;
@@ -65,11 +86,11 @@ public abstract class BankAccount  {
 	public void setInterestRate(double interestRate) {
 		this.interestRate = interestRate;
 	}
-	public long getAccountNumber() {
+	public int getAccountNumber() {
 		return accountNumber;
 	}
-	public void setAccountNumber(long accountNumber) {
-		this.accountNumber = accountNumber;
+	public void setAccountNumber(int accountNumber) {
+		this.accountNumber =  accountNumber;
 	}
 	
 	public String getOpenedOn() {
@@ -80,5 +101,4 @@ public abstract class BankAccount  {
 		this.openedOn = openedOn;
 	}
 	
-
 }
